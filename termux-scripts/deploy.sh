@@ -1,8 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
 # Open-AutoGLM 混合方案 - Termux 一键部署脚本
-# 版本: 1.0.0 (已适配官方Termux)
-# 修改说明: 修复 pip 安装被禁止的问题，优化依赖安装逻辑。
+# 版本: 1.0.0
 
 set -e
 
@@ -33,7 +32,7 @@ print_error() {
 print_header() {
     echo ""
     echo "============================================================"
-    echo "  Open-AutoGLM 混合方案 - 一键部署 (官方Termux适配版)"
+    echo "  Open-AutoGLM 混合方案 - 一键部署"
     echo "  版本: 1.0.0"
     echo "============================================================"
     echo ""
@@ -80,16 +79,6 @@ install_dependencies() {
     # 安装其他工具
     pkg install curl wget -y
     
-    # ========== 【关键修复】 ==========
-    # 在官方Termux中，必须通过pkg安装python-pip，不能直接用pip升级
-    if ! command -v pip &> /dev/null; then
-        print_info "通过 Termux 包管理器安装 pip..."
-        pkg install python-pip -y
-    else
-        print_success "pip 已可用: $(pip --version | cut -d' ' -f1-2)"
-    fi
-    # =================================
-    
     print_success "必要软件安装完成"
 }
 
@@ -97,14 +86,10 @@ install_dependencies() {
 install_python_packages() {
     print_info "安装 Python 依赖包..."
     
-    # ========== 【关键修复】 ==========
-    # 在官方Termux中，禁止运行 `pip install --upgrade pip`
-    # 我们注释掉这行，或者替换为安全操作
-    print_info "跳过 pip 自身升级 (Termux 安全限制)..."
-    # pip install --upgrade pip  # 【这行已被注释】
+    # 升级 pip
+    pip install --upgrade pip
     
-    # 直接安装项目所需的Python包
-    print_info "安装基础Python包: pillow openai requests..."
+    # 安装依赖
     pip install pillow openai requests
     
     print_success "Python 依赖安装完成"
